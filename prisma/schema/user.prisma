@@ -1,0 +1,31 @@
+model User {
+    id               Int                @id @default(autoincrement())
+    sessions         Session[]
+    email            String             @unique
+    emailVerified    Boolean            @default(false)
+    passwordHash     String?
+    LoginToken       LoginToken[]
+    ChangedPasswords ChangedPasswords[]
+}
+
+model Session {
+    id        String   @id
+    userId    Int
+    expiresAt DateTime
+    user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model LoginToken {
+    id        String   @id
+    userId    Int
+    expiresAt DateTime
+    user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model ChangedPasswords {
+    id           Int      @id @default(autoincrement())
+    userId       Int
+    createdAt    DateTime @default(now())
+    passwordHash String
+    user         User     @relation(fields: [userId], references: [id])
+}
